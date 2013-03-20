@@ -2,6 +2,14 @@ grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 
+grails.project.repos.default = "quonb-snapshot"
+
+grails.project.dependency.distribution = {
+    String serverRoot = "http://mvn.quonb.org"
+    remoteRepository(id: 'quonb-snapshot', url: serverRoot + '/plugins-snapshot-local/')
+    remoteRepository(id: 'quonb-release', url: serverRoot + '/plugins-release-local/')
+}
+
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
@@ -20,6 +28,10 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
+        grailsCentral()
+
+        mavenRepo "http://mvn.quonb.org/repo"
+        grailsRepo "http://mvn.quonb.org/repo", "quonb"
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
