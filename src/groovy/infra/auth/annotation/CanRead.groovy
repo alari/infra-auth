@@ -16,5 +16,6 @@ import java.lang.annotation.Target
 @GroovyASTTransformationClass(["infra.auth.ast.CanReadTransform"])
 public @interface CanRead {
     Class value()
+
     String id() default "#{id}"
 }

@@ -16,6 +16,8 @@ import java.lang.annotation.Target
 @GroovyASTTransformationClass(["infra.auth.ast.CanActWithTransform"])
 public @interface CanActWith {
     Class value()
+
     String id() default "#{id}"
+
     String action()
 }

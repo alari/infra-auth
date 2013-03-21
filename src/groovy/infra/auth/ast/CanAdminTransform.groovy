@@ -13,19 +13,19 @@ import org.codehaus.groovy.transform.GroovyASTTransformation
  * @author alari
  * @since 3/20/13 12:38 PM
  */
-@GroovyASTTransformation(phase=CompilePhase.SEMANTIC_ANALYSIS)
+@GroovyASTTransformation(phase = CompilePhase.SEMANTIC_ANALYSIS)
 class CanAdminTransform extends AbstractTransform implements ASTTransformation {
     @Override
     void visit(ASTNode[] astNodes, SourceUnit sourceUnit) {
-        AnnotationNode annotation= (AnnotationNode) astNodes[0]
+        AnnotationNode annotation = (AnnotationNode) astNodes[0]
         AnnotatedNode body = (AnnotatedNode) astNodes[1]
 
-        ClassExpression resourceClass = (ClassExpression)annotation.getMember("value")
+        ClassExpression resourceClass = (ClassExpression) annotation.getMember("value")
         Statement statement = resourceClass ? resourceAdminStatement(resourceClass) : adminStatement()
 
         if (body instanceof MethodNode) {
             prependMethodStatement(body, statement)
-        } else if (body instanceof ClassNode){
+        } else if (body instanceof ClassNode) {
             body.methods.each {
                 prependMethodStatement(it, statement)
             }
@@ -33,7 +33,7 @@ class CanAdminTransform extends AbstractTransform implements ASTTransformation {
     }
 
     protected Statement resourceAdminStatement(ClassExpression resourceClass) {
-        accessControlStatement("canAdminOrFail", new ArgumentListExpression( resourceClass ))
+        accessControlStatement("canAdminOrFail", new ArgumentListExpression(resourceClass))
     }
 
     protected Statement adminStatement() {

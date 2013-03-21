@@ -16,5 +16,6 @@ import java.lang.annotation.Target
 @GroovyASTTransformationClass(["infra.auth.ast.CanDeleteTransform"])
 public @interface CanDelete {
     Class value()
+
     String id() default "#{id}"
 }

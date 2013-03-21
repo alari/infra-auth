@@ -18,7 +18,7 @@ import org.codehaus.groovy.transform.GroovyASTTransformation
  * @author alari
  * @since 3/20/13 1:59 PM
  */
-@GroovyASTTransformation(phase = CompilePhase.CANONICALIZATION)
+@GroovyASTTransformation(phase = CompilePhase.SEMANTIC_ANALYSIS)
 abstract class AbstractTransform implements ASTTransformation {
     protected static final String HASH_CODE = '#'
     protected static final String GSTRING = '$'

@@ -12,14 +12,14 @@ import org.codehaus.groovy.transform.GroovyASTTransformation
  * @author alari
  * @since 3/20/13 12:38 PM
  */
-@GroovyASTTransformation(phase=CompilePhase.SEMANTIC_ANALYSIS)
+@GroovyASTTransformation(phase = CompilePhase.SEMANTIC_ANALYSIS)
 class CanActWithTransform extends AbstractTransform implements ASTTransformation {
     @Override
     void visit(ASTNode[] astNodes, SourceUnit sourceUnit) {
-        AnnotationNode annotation= (AnnotationNode) astNodes[0]
+        AnnotationNode annotation = (AnnotationNode) astNodes[0]
         AnnotatedNode body = (AnnotatedNode) astNodes[1]
 
-        final String permission = annotation.getMember ("action").text
+        final String permission = annotation.getMember("action").text
         transform(body, annotation, permission)
     }
 }

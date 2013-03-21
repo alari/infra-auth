@@ -35,39 +35,39 @@ class AccessControlUtils {
         failIfNotPermitted PermissionUtils.getDeletePermission(resourceClass, id)
     }
 
-    static  void canOrFail(Class resourceClass, def id, String permission) {
+    static void canOrFail(Class resourceClass, def id, String permission) {
         failIfNotPermitted PermissionUtils.getPermission(resourceClass, id, permission)
     }
 
-    static  void canOrFail(String prefix, String permission) {
+    static void canOrFail(String prefix, String permission) {
         failIfNotPermitted PermissionUtils.getPermission(prefix, permission)
     }
 
-    static  boolean canAdmin() {
+    static boolean canAdmin() {
         isPermitted PermissionUtils.getAdminPermission()
     }
 
-    static  boolean canRead(Class resourceClass, def id) {
+    static boolean canRead(Class resourceClass, def id) {
         isPermitted PermissionUtils.getReadPermission(resourceClass, id)
     }
 
-    static  boolean canUpdate(Class resourceClass, def id) {
+    static boolean canUpdate(Class resourceClass, def id) {
         isPermitted PermissionUtils.getUpdatePermission(resourceClass, id)
     }
 
-    static  boolean canCreate(Class resourceClass) {
+    static boolean canCreate(Class resourceClass) {
         isPermitted PermissionUtils.getCreatePermission(resourceClass)
     }
 
-    static  boolean canDelete(Class resourceClass, def id) {
+    static boolean canDelete(Class resourceClass, def id) {
         isPermitted PermissionUtils.getDeletePermission(resourceClass, id)
     }
 
-    static  boolean can(Class resourceClass, def id, String permission) {
+    static boolean can(Class resourceClass, def id, String permission) {
         isPermitted PermissionUtils.getPermission(resourceClass, id, permission)
     }
 
-    static  boolean can(String prefix, String permission) {
+    static boolean can(String prefix, String permission) {
         isPermitted PermissionUtils.getPermission(prefix, permission)
     }
 
@@ -75,20 +75,20 @@ class AccessControlUtils {
         SecurityUtils.subject?.isPermitted(permission)
     }
 
-    static  void failIfNotPermitted(String permission) {
+    static void failIfNotPermitted(String permission) {
         if (!isPermitted(permission)) {
-            if ( SecurityUtils.subject?.authenticated)
+            if (SecurityUtils.subject?.authenticated)
                 throwAuthorizationException(permission)
             else
                 throwUnauthenticatedException()
         }
     }
 
-    static  void throwAuthorizationException(String permission) throws AuthorizationException {
+    static void throwAuthorizationException(String permission) throws AuthorizationException {
         throw new AuthorizationException("Not permitted: ${permission}")
     }
 
-    static  void throwUnauthenticatedException() throws UnauthenticatedException {
+    static void throwUnauthenticatedException() throws UnauthenticatedException {
         throw new UnauthenticatedException("Error! Attempt to request forbidden resource by unauthenticated user!")
     }
 }

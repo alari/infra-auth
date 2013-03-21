@@ -16,5 +16,6 @@ import java.lang.annotation.Target
 @GroovyASTTransformationClass(["infra.auth.ast.CanUpdateTransform"])
 public @interface CanUpdate {
     Class value()
+
     String id() default "#{id}"
 }
