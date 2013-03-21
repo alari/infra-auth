@@ -21,7 +21,7 @@ class PermissionUtils {
     }
 
     static String getPermission(String prefix, String action) {
-        "${prefix}:${action}"
+        prefix ? "${prefix}:${action}" : action
     }
 
     static String getResourceCode(Class resourceClass) {

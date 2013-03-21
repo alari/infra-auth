@@ -1,8 +1,12 @@
 package infra.auth.ast
 
-import org.codehaus.groovy.ast.*
+import org.codehaus.groovy.ast.ASTNode
+import org.codehaus.groovy.ast.AnnotatedNode
+import org.codehaus.groovy.ast.AnnotationNode
+import org.codehaus.groovy.ast.ClassNode
+import org.codehaus.groovy.ast.MethodNode
 import org.codehaus.groovy.ast.expr.ArgumentListExpression
-import org.codehaus.groovy.ast.expr.ClassExpression
+import org.codehaus.groovy.ast.expr.ConstantExpression
 import org.codehaus.groovy.ast.stmt.Statement
 import org.codehaus.groovy.control.CompilePhase
 import org.codehaus.groovy.control.SourceUnit
@@ -14,14 +18,19 @@ import org.codehaus.groovy.transform.GroovyASTTransformation
  * @since 3/20/13 12:38 PM
  */
 @GroovyASTTransformation(phase=CompilePhase.SEMANTIC_ANALYSIS)
-class CanAdminTransform extends AbstractTransform implements ASTTransformation {
+class CanActTransform extends AbstractTransform implements ASTTransformation {
     @Override
     void visit(ASTNode[] astNodes, SourceUnit sourceUnit) {
         AnnotationNode annotation= (AnnotationNode) astNodes[0]
         AnnotatedNode body = (AnnotatedNode) astNodes[1]
 
-        ClassExpression resourceClass = (ClassExpression)annotation.getMember("value")
-        Statement statement = resourceClass ? resourceAdminStatement(resourceClass) : adminStatement()
+        String permission = annotation.getMember ("value").text
+        String prefix = annotation.getMember("prefix").text
+
+        Statement statement = accessControlStatement("canOrFail", new ArgumentListExpression(
+                keyExpression(prefix),
+                keyExpression(permission)
+        ))
 
         if (body instanceof MethodNode) {
             prependMethodStatement(body, statement)
@@ -30,13 +39,5 @@ class CanAdminTransform extends AbstractTransform implements ASTTransformation {
                 prependMethodStatement(it, statement)
             }
         }
-    }
-
-    protected Statement resourceAdminStatement(ClassExpression resourceClass) {
-        accessControlStatement("canAdminOrFail", new ArgumentListExpression( resourceClass ))
-    }
-
-    protected Statement adminStatement() {
-        accessControlStatement("canAdminOrFail")
     }
 }

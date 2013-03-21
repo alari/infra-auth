@@ -6,11 +6,7 @@ import org.codehaus.groovy.ast.AnnotationNode
 import org.codehaus.groovy.ast.ClassNode
 import org.codehaus.groovy.ast.MethodNode
 import org.codehaus.groovy.ast.builder.AstBuilder
-import org.codehaus.groovy.ast.expr.ArgumentListExpression
-import org.codehaus.groovy.ast.expr.ClassExpression
-import org.codehaus.groovy.ast.expr.ConstantExpression
-import org.codehaus.groovy.ast.expr.Expression
-import org.codehaus.groovy.ast.expr.MethodCallExpression
+import org.codehaus.groovy.ast.expr.*
 import org.codehaus.groovy.ast.stmt.BlockStatement
 import org.codehaus.groovy.ast.stmt.ExpressionStatement
 import org.codehaus.groovy.ast.stmt.Statement
@@ -22,7 +18,7 @@ import org.codehaus.groovy.transform.GroovyASTTransformation
  * @author alari
  * @since 3/20/13 1:59 PM
  */
-@GroovyASTTransformation(phase=CompilePhase.CANONICALIZATION)
+@GroovyASTTransformation(phase = CompilePhase.CANONICALIZATION)
 abstract class AbstractTransform implements ASTTransformation {
     protected static final String HASH_CODE = '#'
     protected static final String GSTRING = '$'
@@ -33,7 +29,7 @@ abstract class AbstractTransform implements ASTTransformation {
     protected static final String CAN_CREATE_OR_FAIL = 'canCreateOrFail'
 
     Expression keyExpression(String key) {
-        if(key.contains(HASH_CODE)) {
+        if (key && key.contains(HASH_CODE)) {
             def ast = new AstBuilder().buildFromString("""
                 "${key.replace(HASH_CODE, GSTRING).toString()}"
            """)
@@ -48,7 +44,7 @@ abstract class AbstractTransform implements ASTTransformation {
     }
 
     protected ClassExpression getResourceClass(AnnotationNode annotationNode) {
-        (ClassExpression)annotationNode.getMember("resource")
+        (ClassExpression) annotationNode.getMember("value")
     }
 
     protected void transform(MethodNode methodNode, AnnotationNode annotationNode, String permission) {
@@ -70,23 +66,29 @@ abstract class AbstractTransform implements ASTTransformation {
     }
 
     protected void prependMethodStatement(MethodNode methodNode, Statement statement) {
-        BlockStatement codeBlock = (BlockStatement)methodNode.code
+        BlockStatement codeBlock = (BlockStatement) methodNode.code
         BlockStatement block = new BlockStatement();
 
-        block.addStatement( statement)
+        block.addStatement(statement)
         block.addStatements(codeBlock.statements)
         methodNode.code = block
     }
 
-    protected Statement resourcePermittedStatement(ClassExpression resourceClass, String id, String permission) {
+    protected Statement accessControlStatement(String method, ArgumentListExpression args = null) {
         new ExpressionStatement(new MethodCallExpression(
                 new ClassExpression(new ClassNode(AccessControlUtils)),
-                new ConstantExpression(CAN_OR_FAIL),
-                new ArgumentListExpression(
-                        resourceClass,
-                        keyExpression(id),
-                        keyExpression(permission)
-                )  )
+                new ConstantExpression(method),
+                args ?: new ArgumentListExpression(
+
+                ))
         )
+    }
+
+    protected Statement resourcePermittedStatement(ClassExpression resourceClass, String id, String permission) {
+        accessControlStatement(CAN_OR_FAIL, new ArgumentListExpression(
+                resourceClass,
+                keyExpression(id),
+                keyExpression(permission)
+        ))
     }
 }

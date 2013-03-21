@@ -9,12 +9,12 @@ import java.lang.annotation.Target
 
 /**
  * @author alari
- * @since 3/20/13 2:29 PM
+ * @since 3/20/13 12:34 PM
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target([ElementType.METHOD, ElementType.TYPE])
-@GroovyASTTransformationClass(["infra.auth.ast.CanReadTransform"])
-public @interface CanRead {
-    Class value()
-    String id() default "#{id}"
+@GroovyASTTransformationClass(["infra.auth.ast.CanActTransform"])
+public @interface CanAct {
+    String prefix() default ''
+    String value()
 }

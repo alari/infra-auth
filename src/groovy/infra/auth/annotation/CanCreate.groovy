@@ -15,6 +15,5 @@ import java.lang.annotation.Target
 @Target([ElementType.METHOD, ElementType.TYPE])
 @GroovyASTTransformationClass(["infra.auth.ast.CanCreateTransform"])
 public @interface CanCreate {
-    Class resource()
-    String id()
+    Class value()
 }

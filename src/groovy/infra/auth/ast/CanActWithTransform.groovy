@@ -19,7 +19,7 @@ class CanActWithTransform extends AbstractTransform implements ASTTransformation
         AnnotationNode annotation= (AnnotationNode) astNodes[0]
         AnnotatedNode body = (AnnotatedNode) astNodes[1]
 
-        final String permission = annotation.getMember ("value").text
+        final String permission = annotation.getMember ("action").text
         transform(body, annotation, permission)
     }
 }
