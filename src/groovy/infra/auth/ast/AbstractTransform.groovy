@@ -40,7 +40,7 @@ abstract class AbstractTransform implements ASTTransformation {
     }
 
     protected String getId(AnnotationNode annotationNode) {
-        annotationNode.getMember("id").text
+        annotationNode.getMember("id")?.text ?: "#{id}"
     }
 
     protected ClassExpression getResourceClass(AnnotationNode annotationNode) {

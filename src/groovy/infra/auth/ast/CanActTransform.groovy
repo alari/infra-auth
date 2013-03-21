@@ -25,7 +25,7 @@ class CanActTransform extends AbstractTransform implements ASTTransformation {
         AnnotatedNode body = (AnnotatedNode) astNodes[1]
 
         String permission = annotation.getMember ("value").text
-        String prefix = annotation.getMember("prefix").text
+        String prefix = annotation.getMember("prefix")?.text ?: ""
 
         Statement statement = accessControlStatement("canOrFail", new ArgumentListExpression(
                 keyExpression(prefix),
