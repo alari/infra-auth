@@ -45,6 +45,8 @@ grails.project.dependency.resolution = {
             export = false
         }
 
+        test ":hibernate:$grailsVersion"
+
         compile ":shiro:1.1.4"
     }
 }
