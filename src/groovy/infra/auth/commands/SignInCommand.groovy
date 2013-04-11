@@ -4,24 +4,19 @@ import groovy.transform.CompileStatic
 import grails.validation.Validateable
 
 /**
- * @author  prostohz
- * @since 4/8/13 4:30 PM
+ * @author prostohz
+ * @since 4/11/13 6:06 PM
  */
 @CompileStatic
 @Validateable
-class SignUpCommand {
+class SignInCommand {
 
     String username
 
     String password
-    String confirmedPassword
 
     static constraints = {
         username nullable: false, blank: false, size: 3..127
         password nullable: false, blank: false, size: 3..127
-
-        confirmedPassword nullable: false, blank: false, size: 3..127, validator: { String value, SignUpCommand command ->
-            value == command.password
-        }
     }
 }

@@ -57,8 +57,8 @@ class AuthorizationService {
      * @param passwordHash
      * @return
      */
-    public Map<String, ?> signIn(String username, String passwordHash) {
-        signIn(username, passwordHash, false)
+    public Map<String, ?> signIn(String username, String password) {
+        signIn(username, password, false)
     }
 
     /**
@@ -68,13 +68,13 @@ class AuthorizationService {
      * @param rememberMe
      * @return
      */
-    public Map<String, ?> signIn(String username, String passwordHash, boolean rememberMe) {
+    public Map<String, ?> signIn(String username, String password, boolean rememberMe) {
         if (isAuthenticated()) {
             return authStatus
         }
 
-        if (username && passwordHash) {
-            AuthToken authToken = new AuthToken(username: username, passwordHash: passwordHash)
+        if (username && password) {
+            AuthToken authToken = new AuthToken(username: username, passwordHash: password)
             authToken.rememberMe = rememberMe
 
             try {
@@ -92,12 +92,12 @@ class AuthorizationService {
      * @param userCreator
      * @return
      */
-    public Map<String, ?> signUp(SignUpCommand command) {
+    public Map<String, ?> signUp(String username, String password) {
         if (SecurityUtils.subject?.isAuthenticated()) {
             return authStatus
         }
 
-        User newUser = authRepo.createUser(command.username, command.password)
+        User newUser = authRepo.createUser(username, password)
         if (newUser) {
             subject.login(new AuthToken(username: newUser.username, password: newUser.passwordHash))
 

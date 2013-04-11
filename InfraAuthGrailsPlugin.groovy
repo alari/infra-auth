@@ -41,5 +41,14 @@ class InfraAuthGrailsPlugin {
         permissionUtils(ShiroPermissionUtils)
         permissionDeniedBehavior(ShiroPermissionDeniedBehavior)
         authRepo(ShiroAuthRepo)
+
+//
+//        def infraConfig = application.config.infra
+//        println "infraConfig: ${infraConfig}"
+//        if(infraConfig) {
+//            ConfigObject authConfig = infraConfig.auth
+//            println "authConfig: ${authConfig}"
+//        }
+
     }
 }
