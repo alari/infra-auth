@@ -97,7 +97,7 @@ class AuthorizationService {
             return authStatus
         }
 
-        User newUser = authRepo.create(command.username, command.password)
+        User newUser = authRepo.createUser(command.username, command.password)
         if (newUser) {
             subject.login(new AuthToken(username: newUser.username, password: newUser.passwordHash))
 

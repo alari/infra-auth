@@ -15,9 +15,4 @@ class ShiroUser implements Serializable, User {
         passwordHash nullable: true
         oauthCredentials minSize: 0
     }
-
-    @Override
-    void removeFromRoles(Role role) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
 }

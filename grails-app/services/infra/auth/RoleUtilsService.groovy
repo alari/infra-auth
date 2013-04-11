@@ -12,6 +12,9 @@ class RoleUtilsService {
     @Autowired
     PermissionUtils permissionUtils
 
+    @Autowired
+    AuthRepo authRepo
+
     String getRoleName(Class resourceClass, def id) {
         "${resourceClass.simpleName}:${id}"
     }
@@ -20,69 +23,57 @@ class RoleUtilsService {
         "${prefix}:${id}"
     }
 
-    ShiroRole getRole(Class resourceClass, def id) {
+    Role getRole(Class resourceClass, def id) {
         getRole(getRoleName(resourceClass, id))
     }
 
-    ShiroRole getRole(String name) {
-        ShiroRole.findOrSaveByName(name)
-    }
-
-    ShiroRole getRole(String prefix, def id) {
+    Role getRole(String prefix, def id) {
         getRole(getRoleName(prefix, id))
     }
 
-    ShiroRole createRole(Class resourceClass, def id, List<String> permissions = null) {
-        createRole(getRoleName(resourceClass, id), permissions ? permissions : permissionUtils.getResourcePermissions(resourceClass.simpleName, id))
+    Role getRole(String name) {
+        authRepo.findOrCreateRole(name)
     }
 
-    ShiroRole createRole(String prefix, def id, List<String> permissions) {
+    Role createRole(Class resourceClass, def id, List<String> permissions = null) {
+        createRole(getRoleName(resourceClass, id), permissions ? permissions : permissionUtils.getResourcePermissions(resourceClass, id))
+    }
+
+    Role createRole(String prefix, def id, List<String> permissions) {
         createRole(getRoleName(prefix, id), permissions)
     }
 
-    ShiroRole createRole(String name, List<String> permissions) {
-        ShiroRole role = getRole(name)
-
-        for (String p in permissions) {
-            role.addToPermissions(p)
-        }
-
-        role.save(flush: true)
+    Role createRole(String name, List<String> permissions) {
+       authRepo.createRole(name, permissions)
     }
 
-    /*
-     *TODO need for review
-     */
+
     boolean hasRole(User user, Role role) {
-        user?.roles?.contains(role)
+        Collection<Role> roles = authRepo.getRoles(user)
+        if (roles && roles.size())
+            roles.contains(role)
     }
 
-    void addRole(ShiroUser user, ShiroRole role) {
-        if(user.roles.any{it.name == role.name}) return;
-        user.addToRoles(role)
-        userPermissionsService.updateUserPermissions(user)
-    }
-
-    void removeRole(User user, Role role) {
-        if(hasRole(user, role)) {
-            user.removeFromRoles(role)
+    void addRole(User user, Role role) {
+        if (!hasRole(user, role)) {
+            authRepo.addToRoles(user, role)
             userPermissionsService.updateUserPermissions(user)
         }
     }
 
-    void addPermissions(ShiroRole role, List<String> permissions = null) {
-        for (String p in permissions) {
-            role.addToPermissions(p)
+    void removeRole(User user, Role role) {
+        if(hasRole(user, role)) {
+            authRepo.removeFromRoles(user, role)
+            userPermissionsService.updateUserPermissions(user)
         }
-
-        role.save(flush: true)
     }
 
-    void removePermissions(ShiroRole role, Collection<String> permissions) {
-        for(String p in permissions) {
-            role.removeFromPermissions(p)
-        }
-        role.save()
+    void addPermissions(Role role, List<String> permissions = null) {
+        authRepo.addPermissionsToRole(role, permissions)
+    }
+
+    void removePermissions(Role role, Collection<String> permissions) {
+        authRepo.removePermissionsFromRole(role, permissions)
     }
 
     void initRoles(Closure closure) {
