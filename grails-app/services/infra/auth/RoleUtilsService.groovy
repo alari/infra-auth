@@ -1,10 +1,18 @@
 package infra.auth
 
+import infra.auth.domains.Role
+import infra.auth.domains.User
+import infra.auth.utils.PermissionUtils
+import org.springframework.beans.factory.annotation.Autowired
+
 class RoleUtilsService {
 
     def userPermissionsService
 
-     String getRoleName(Class resourceClass, def id) {
+    @Autowired
+    PermissionUtils permissionUtils
+
+    String getRoleName(Class resourceClass, def id) {
         "${resourceClass.simpleName}:${id}"
     }
 
@@ -25,7 +33,7 @@ class RoleUtilsService {
     }
 
     ShiroRole createRole(Class resourceClass, def id, List<String> permissions = null) {
-        createRole(getRoleName(resourceClass, id), permissions ? permissions : PermissionUtils.getResourcePermissions(resourceClass, id))
+        createRole(getRoleName(resourceClass, id), permissions ? permissions : permissionUtils.getResourcePermissions(resourceClass.simpleName, id))
     }
 
     ShiroRole createRole(String prefix, def id, List<String> permissions) {
@@ -45,7 +53,7 @@ class RoleUtilsService {
     /*
      *TODO need for review
      */
-    boolean hasRole(ShiroUser user, ShiroRole role) {
+    boolean hasRole(User user, Role role) {
         user?.roles?.contains(role)
     }
 
@@ -55,7 +63,7 @@ class RoleUtilsService {
         userPermissionsService.updateUserPermissions(user)
     }
 
-    void removeRole(ShiroUser user, ShiroRole role) {
+    void removeRole(User user, Role role) {
         if(hasRole(user, role)) {
             user.removeFromRoles(role)
             userPermissionsService.updateUserPermissions(user)

@@ -1,16 +1,19 @@
 package infra.auth
 
+import infra.auth.domains.User
+
 class UserPermissionsService {
 
     static transactional = false
 
     def grailsCacheManager
 
-    Collection<String> getUserPermissions(ShiroUser user) {
-        if(!user) return []
+    Collection<String> getUserPermissions(User user) {
+        if(!user)
+            return []
         def cache = grailsCacheManager?.getCache("permissions")?.get(user.id.toString())
         if (cache == null) {
-            cache = (user.permissions?:[]) + (user.roles*.permissions?.flatten() ?: []).unique()
+            cache = (user.roles*.permissions?.flatten() ?: []).unique()
             grailsCacheManager?.getCache("permissions")?.put(user.id.toString(), cache)
         } else cache = cache.get()
         return cache
@@ -29,12 +32,12 @@ class UserPermissionsService {
         user.save()
     }
 
-    void updateUserPermissions(ShiroUser user) {
+    void updateUserPermissions(User user) {
         evictUserPermissions(user)
         user.save()
     }
 
-    void evictUserPermissions(final ShiroUser user) {
+    void evictUserPermissions(final User user) {
         grailsCacheManager?.getCache("permissions")?.evict(user.id.toString())
     }
 }
