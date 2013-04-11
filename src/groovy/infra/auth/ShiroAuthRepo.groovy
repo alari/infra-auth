@@ -28,7 +28,7 @@ class ShiroAuthRepo implements AuthRepo<ShiroUser, ShiroRole> {
 
     @Override
     String getRoleName(ShiroRole role) {
-        role ? role.name : null
+        role?.name ? role.name : null
     }
 
     @Override

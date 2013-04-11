@@ -62,7 +62,7 @@ class ShiroDbRealm implements Realm {
         if (user == null)
             return false
         else {
-            return roles.size() == roles.intersect(user.roles).size()
+            return roles.size() == roles.intersect(authRepo.getRoles(user)).size()
         }
     }
 

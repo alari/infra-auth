@@ -7,7 +7,6 @@ import grails.validation.Validateable
  * @author prostohz
  * @since 4/11/13 6:06 PM
  */
-@CompileStatic
 @Validateable
 class SignInCommand {
 
