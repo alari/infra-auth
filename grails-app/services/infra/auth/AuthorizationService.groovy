@@ -2,10 +2,10 @@ package infra.auth
 
 import infra.auth.domains.User
 import infra.auth.tokens.AuthToken
-import infra.auth.commands.SignUpCommand
 
 import org.apache.shiro.SecurityUtils
 import org.apache.shiro.authc.AuthenticationException
+import org.apache.shiro.authc.UsernamePasswordToken
 import org.apache.shiro.subject.Subject
 import org.apache.shiro.grails.ConfigUtils
 
@@ -47,8 +47,12 @@ class AuthorizationService {
      * @param user
      * @return
      */
-    public Map<String, ?> signIn(ShiroUser user) {
-        signIn(user.username, user.passwordHash)
+    public Map<String, ?> signIn(User user) {
+        if (isAuthenticated()) {
+            return authStatus
+        }
+        subject.login(new AuthToken(username: user.username, passwordHash: user.passwordHash))
+        authStatus
     }
 
     /**
@@ -74,13 +78,16 @@ class AuthorizationService {
         }
 
         if (username && password) {
-            AuthToken authToken = new AuthToken(username: username, passwordHash: password)
+            UsernamePasswordToken authToken = new UsernamePasswordToken(username, password)
             authToken.rememberMe = rememberMe
 
             try {
                 subject.login(authToken)
+
+                println "User loged in successfully"
             } catch (AuthenticationException ex) {
-                println "User couldn`t authorize."
+                println "User loged in unsuccessfully"
+                println "Exception: ${ex}"
             }
         }
         authStatus
@@ -103,7 +110,7 @@ class AuthorizationService {
 
             println "User created successfully"
         } else {
-            println "User created unsuccessfully"
+            println "User wasn`t created successfully"
         }
         authStatus
     }

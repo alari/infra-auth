@@ -12,14 +12,18 @@ class AuthController {
     }
 
     def signIn(SignInCommand command) {
-        if (command?.validate()) {
-            authorizationService.signIn(command.username, command.password)
+        if (command.validate()) {
+            Map result = authorizationService.signIn(command.username, command.password)
+            if (!result.isAuthenticated)
+                flash.message = g.message(code: "infra.auth.signIn.status.failed")
         }
     }
 
     def signUp(SignUpCommand command) {
-        if (command?.validate()) {
-            authorizationService.signUp(command.username, command.password)
+        if (command.validate()) {
+            Map result = authorizationService.signUp(command.username, command.password)
+            if (!result.isAuthenticated)
+                flash.message = g.message(code: "infra.auth.signUp.status.failed")
         }
     }
 

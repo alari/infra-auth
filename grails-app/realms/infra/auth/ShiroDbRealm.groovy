@@ -9,11 +9,10 @@ import org.apache.shiro.authc.AccountException
 import org.apache.shiro.authc.IncorrectCredentialsException
 import org.apache.shiro.authc.SimpleAccount
 import org.apache.shiro.authc.UnknownAccountException
-
+import org.apache.shiro.authc.UsernamePasswordToken
 import org.springframework.beans.factory.annotation.Autowired
 
 class ShiroDbRealm implements Realm {
-
     static authTokenClass = org.apache.shiro.authc.UsernamePasswordToken
 
     @Autowired
@@ -26,7 +25,8 @@ class ShiroDbRealm implements Realm {
     def credentialMatcher
 
     @Override
-    SimpleAccount authenticate(AuthToken authToken) {
+    SimpleAccount authenticate(UsernamePasswordToken authToken) {
+
         if (authToken instanceof AuthToken) {
             return new SimpleAccount(authToken.username, authToken.passwordHash, "ShiroDbRealm")
         }

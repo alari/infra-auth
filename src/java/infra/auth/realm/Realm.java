@@ -5,6 +5,7 @@ import infra.auth.domains.User;
 import infra.auth.tokens.AuthToken;
 
 import org.apache.shiro.authc.SimpleAccount;
+import org.apache.shiro.authc.UsernamePasswordToken;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface Realm {
      * @param authToken
      * @return
      */
-    public SimpleAccount authenticate(AuthToken authToken);
+    public SimpleAccount authenticate(UsernamePasswordToken authToken);
 
     /**
      * Returns <tt>true</tt> if specified pricipal has a role with roleName

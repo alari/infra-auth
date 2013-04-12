@@ -7,22 +7,31 @@
 <html>
 <head>
     <title><g:message code="infra.auth.signUp.title" /></title>
-    <link type="text/css" href="${createLinkTo(dir:'css',file:'auth.css')}" />
+    <link type="text/css" rel="stylesheet" href="${createLinkTo(dir:'css',file:'auth.css')}" />
 </head>
 <body>
 
     <div class="auth-form">
+        <div class="b-entrance__form-title m-entrance__form-title-position">
+            <h2 class="b-entrance__form-title-h2"><g:message code="infra.auth.signUp.title" /></h2>
+        </div>
+
         <shiro:isLoggedIn>
             <g:link controller="auth" action="signOut">Выйти</g:link>
         </shiro:isLoggedIn>
         <shiro:isNotLoggedIn>
             <g:form controller="auth" action="signUp">
-                <input type="text" name="username" placeholder="${message(code: 'infra.auth.signUp.username.field.placeholder')}">
-                <input type="text" name="password" placeholder="${message(code: 'infra.auth.signUp.password.field.placeholder')}">
-                <input type="text" name="confirmedPassword" placeholder="${message(code: 'infra.auth.signUp.confirmedPassword.field.placeholder')}">
+                <input type="text" class="auth-form-field" name="username" placeholder="${message(code: 'infra.auth.signUp.form.fields.username.placeholder')}">
+                <input type="text" class="auth-form-field" name="password" placeholder="${message(code: 'infra.auth.signUp.form.fields.password.placeholder')}">
+                <input type="text" class="auth-form-field" name="confirmedPassword" placeholder="${message(code: 'infra.auth.signUp.form.fields.confirmedPassword.placeholder')}">
 
-                <input type="submit" value="${message(code: 'infra.auth.signUp.submit.field.placeholder')}">
+                <div>
+                    <input type="submit" class="auth-form-submit" value="${message(code: 'infra.auth.signUp.form.submit.value')}">
+                </div>
             </g:form>
+            <div class="auth-form-error">
+                <g:message code="${flash.message}" />
+            </div>
         </shiro:isNotLoggedIn>
     </div>
 
