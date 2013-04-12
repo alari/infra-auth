@@ -19,34 +19,18 @@ class AuthorizationService {
 
     def messageSource
 
-    /**
-     *
-     * @return
-     */
     public Subject getSubject() {
         SecurityUtils.subject
     }
 
-    /**
-     *
-     * @return
-     */
     public String getPrincipal() {
         subject?.principal
     }
 
-    /**
-     *
-     * @return
-     */
     public boolean isAuthenticated() {
         subject?.isAuthenticated() ?: false
     }
 
-    /**
-     * @param user
-     * @return
-     */
     public Map<String, ?> signIn(User user) {
         if (isAuthenticated()) {
             return authStatus
@@ -55,23 +39,10 @@ class AuthorizationService {
         authStatus
     }
 
-    /**
-     *
-     * @param username
-     * @param passwordHash
-     * @return
-     */
     public Map<String, ?> signIn(String username, String password) {
         signIn(username, password, false)
     }
 
-    /**
-     *
-     * @param username
-     * @param passwordHash
-     * @param rememberMe
-     * @return
-     */
     public Map<String, ?> signIn(String username, String password, boolean rememberMe) {
         if (isAuthenticated()) {
             return authStatus
@@ -93,12 +64,6 @@ class AuthorizationService {
         authStatus
     }
 
-    /**
-     *
-     * @param command
-     * @param userCreator
-     * @return
-     */
     public Map<String, ?> signUp(String username, String password) {
         if (SecurityUtils.subject?.isAuthenticated()) {
             return authStatus
@@ -115,10 +80,6 @@ class AuthorizationService {
         authStatus
     }
 
-    /**
-     *
-     * @return
-     */
     public Map<String, ?> signOut() {
         def principal = getPrincipal()
 
@@ -128,10 +89,6 @@ class AuthorizationService {
         authStatus
     }
 
-    /**
-     *
-     * @return
-     */
     public Map<String, ?> getAuthStatus() {
         [isAuthenticated: isAuthenticated(), username: principal]
     }

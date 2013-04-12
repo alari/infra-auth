@@ -8,27 +8,39 @@ class AuthController {
     def authorizationService
 
     def index() {
-        redirect action: "signIn"
+        redirect action: "login"
+    }
+
+    def login() {
+        if (authorizationService.isAuthenticated())
+            redirect uri: "/"
+        else
+            redirect action: "signIn"
     }
 
     def signIn(SignInCommand command) {
         if (command.validate()) {
-            Map result = authorizationService.signIn(command.username, command.password)
-            if (!result.isAuthenticated)
+            authorizationService.signIn(command.username, command.password)
+            if (!authorizationService.isAuthenticated()) {
                 flash.message = g.message(code: "infra.auth.signIn.status.failed")
+            }
         }
     }
 
     def signUp(SignUpCommand command) {
         if (command.validate()) {
-            Map result = authorizationService.signUp(command.username, command.password)
-            if (!result.isAuthenticated)
+            authorizationService.signUp(command.username, command.password)
+            if (!authorizationService.isAuthenticated()) {
                 flash.message = g.message(code: "infra.auth.signUp.status.failed")
+            }
         }
     }
 
     def signOut() {
         authorizationService.signOut()
+
         redirect action: "signIn"
     }
+
+    def unauthorized() { }
 }
