@@ -1,6 +1,8 @@
 package infra.auth
 
 import infra.auth.domains.User
+import org.apache.shiro.grails.ShiroSecurityService
+import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * @author prostohz
@@ -8,7 +10,8 @@ import infra.auth.domains.User
  */
 class ShiroAuthRepo implements AuthRepo<ShiroUser, ShiroRole> {
 
-    def shiroSecurityService
+    @Autowired
+    ShiroSecurityService shiroSecurityService
 
     @Override
     ShiroUser createUser(String username, String password) {

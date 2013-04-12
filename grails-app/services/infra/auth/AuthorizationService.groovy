@@ -80,7 +80,7 @@ class AuthorizationService {
             try {
                 subject.login(authToken)
             } catch (AuthenticationException ex) {
-                log.info "User couldn`t authorize."
+                println "User couldn`t authorize."
             }
         }
         authStatus

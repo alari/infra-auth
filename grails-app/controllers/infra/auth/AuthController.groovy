@@ -7,19 +7,24 @@ class AuthController {
 
     def authorizationService
 
+    def index() {
+        redirect action: "signIn"
+    }
+
     def signIn(SignInCommand command) {
-        if (command.validate()) {
+        if (command?.validate()) {
             authorizationService.signIn(command.username, command.password)
-        } else {
-            println "command didn`t validate"
         }
     }
 
     def signUp(SignUpCommand command) {
-        if (command.validate()) {
+        if (command?.validate()) {
             authorizationService.signUp(command.username, command.password)
-        } else {
-            println "command didn`t validate"
         }
+    }
+
+    def signOut() {
+        authorizationService.signOut()
+        redirect action: "signIn"
     }
 }

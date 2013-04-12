@@ -2,6 +2,7 @@ import infra.auth.ShiroAuthRepo
 import infra.auth.ShiroPermissionDeniedBehavior
 import infra.auth.utils.ShiroPermissionUtils
 import org.apache.shiro.authc.credential.Sha1CredentialsMatcher
+import org.apache.shiro.grails.ShiroSecurityService
 
 class InfraAuthGrailsPlugin {
 
@@ -39,9 +40,14 @@ class InfraAuthGrailsPlugin {
 //
 
     def doWithSpring = {
-        permissionUtils(ShiroPermissionUtils)
-        permissionDeniedBehavior(ShiroPermissionDeniedBehavior)
+
         authRepo(ShiroAuthRepo)
+
+        permissionUtils(ShiroPermissionUtils)
+
+        permissionDeniedBehavior(ShiroPermissionDeniedBehavior)
+
+        shiroSecurityService(ShiroSecurityService)
 
         credentialMatcher(Sha1CredentialsMatcher) {
             storedCredentialsHexEncoded = true
