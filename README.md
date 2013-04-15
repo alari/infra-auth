@@ -9,3 +9,35 @@ Usage
 
 Configuration
 --------------
+
+The plugin`s configs template:
+
+`
+infra {
+    
+    roles {
+        user {
+            permissions = [
+                    "Entity:*:admin",
+                    "Oragnization:12:delete"
+            ]
+        }
+    }
+    
+    // Replacement default views with own ones
+    auth {
+        // for authentication
+        signIn {
+            view = "/alterSignIn"
+        }
+        // for registration
+        signUp {
+            view = "/alterSignUp"
+        }
+        // for access denied indication 
+        unauthorized {
+            view = "/alterUnauthorized"
+        }
+    }
+}
+`
