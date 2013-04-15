@@ -6,15 +6,20 @@ Auhor: Dmitry Kurinskiy(name.alari@gmail.com) and Svyat Podmogayev (s.podmogayev
 Usage
 --------------
 
+For more flexible usage of the plugin you should override following classes:
+.
+..
+...
+, and define ..
+
 
 Configuration
 --------------
 
 The plugin`s configs template:
 
-`
-infra {
-    
+```groovy
+infra {    
     roles {
         user {
             permissions = [
@@ -24,7 +29,7 @@ infra {
         }
     }
     
-    // Replacement default views with own ones
+    // Replacement default views with owns one
     auth {
         // for authentication
         signIn {
@@ -40,4 +45,4 @@ infra {
         }
     }
 }
-`
+```
