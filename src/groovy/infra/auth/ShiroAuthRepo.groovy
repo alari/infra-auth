@@ -17,9 +17,11 @@ class ShiroAuthRepo implements AuthRepo<ShiroUser, ShiroRole> {
     ShiroUser createUser(String username, String password) {
         User user = null
         if (username && password) {
-            String passwordHash = shiroSecurityService.encodePassword(password, username)
-            user = new ShiroUser(username: username, passwordHash: passwordHash)
-            user.save()
+            if (!getUserByUsername(username)) {
+                String passwordHash = shiroSecurityService.encodePassword(password, username)
+                user = new ShiroUser(username: username, passwordHash: passwordHash)
+                user.save()
+            }
         }
         user
     }

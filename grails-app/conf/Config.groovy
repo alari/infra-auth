@@ -22,20 +22,13 @@ log4j = {
 
     warn 'org.mortbay.log'
 
-    infra{
+    infra {
+        roles {
+
+        }
         auth {
-            basicRoles {
-                userRole  = "user"
-                staffRole = "staff"
-                rootRole  = "root"
-            }
-
-            auth {
-                view = ""
-            }
-
-            registration {
-                view = ""
+            unauthorized {
+                view = "index"
             }
         }
     }

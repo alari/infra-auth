@@ -6,6 +6,7 @@ import infra.auth.commands.SignUpCommand
 class AuthController {
 
     def authorizationService
+    def viewsResolvingService
 
     def index() {
         redirect action: "login"
@@ -19,28 +20,42 @@ class AuthController {
     }
 
     def signIn(SignInCommand command) {
+        String view = viewsResolvingService.getSignInView()
         if (command.validate()) {
             authorizationService.signIn(command.username, command.password)
             if (!authorizationService.isAuthenticated()) {
                 flash.message = g.message(code: "infra.auth.signIn.status.failed")
             }
         }
+        if(view) {
+            println "signIn-view: ${view}"
+            render view: "/${view}"
+        }
     }
 
     def signUp(SignUpCommand command) {
+        String view = viewsResolvingService.getSignUpView()
         if (command.validate()) {
             authorizationService.signUp(command.username, command.password)
             if (!authorizationService.isAuthenticated()) {
                 flash.message = g.message(code: "infra.auth.signUp.status.failed")
             }
         }
+        if(view) {
+            println "signUp-view: ${view}"
+            render view: "/${view}"
+        }
     }
 
     def signOut() {
         authorizationService.signOut()
 
-        redirect action: "signIn"
+        redirect url: "/"
     }
 
-    def unauthorized() { }
+    def unauthorized() {
+        String view = viewsResolvingService.getUnauthorizedView()
+        if(view)
+            render view: "/${view}"
+    }
 }

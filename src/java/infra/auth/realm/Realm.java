@@ -2,7 +2,6 @@ package infra.auth.realm;
 
 import infra.auth.domains.Role;
 import infra.auth.domains.User;
-import infra.auth.tokens.AuthToken;
 
 import org.apache.shiro.authc.SimpleAccount;
 import org.apache.shiro.authc.UsernamePasswordToken;

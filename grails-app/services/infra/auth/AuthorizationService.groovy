@@ -54,10 +54,7 @@ class AuthorizationService {
 
             try {
                 subject.login(authToken)
-
-                println "User loged in successfully"
             } catch (AuthenticationException ex) {
-                println "User loged in unsuccessfully"
                 println "Exception: ${ex}"
             }
         }
@@ -72,8 +69,6 @@ class AuthorizationService {
         User newUser = authRepo.createUser(username, password)
         if (newUser) {
             subject.login(new AuthToken(username: newUser.username, password: newUser.passwordHash))
-
-            println "User created successfully"
         } else {
             println "User wasn`t created successfully"
         }
