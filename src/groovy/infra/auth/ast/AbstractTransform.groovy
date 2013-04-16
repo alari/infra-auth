@@ -1,6 +1,6 @@
 package infra.auth.ast
 
-import infra.auth.AccessControlUtils
+import infra.auth.utils.AccessControlUtils
 import org.codehaus.groovy.ast.AnnotatedNode
 import org.codehaus.groovy.ast.AnnotationNode
 import org.codehaus.groovy.ast.ClassNode
@@ -13,6 +13,7 @@ import org.codehaus.groovy.ast.stmt.Statement
 import org.codehaus.groovy.control.CompilePhase
 import org.codehaus.groovy.transform.ASTTransformation
 import org.codehaus.groovy.transform.GroovyASTTransformation
+import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * @author alari
@@ -27,6 +28,9 @@ abstract class AbstractTransform implements ASTTransformation {
 
     protected static final String CAN_OR_FAIL = 'canOrFail'
     protected static final String CAN_CREATE_OR_FAIL = 'canCreateOrFail'
+
+    @Autowired
+    AccessControlUtils accessControlUtils
 
     Expression keyExpression(String key) {
         if (key && key.contains(HASH_CODE)) {
@@ -76,7 +80,7 @@ abstract class AbstractTransform implements ASTTransformation {
 
     protected Statement accessControlStatement(String method, ArgumentListExpression args = null) {
         new ExpressionStatement(new MethodCallExpression(
-                new ClassExpression(new ClassNode(AccessControlUtils)),
+                new ClassExpression(new ClassNode(accessControlUtils.getClass())),
                 new ConstantExpression(method),
                 args ?: new ArgumentListExpression(
 

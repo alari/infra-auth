@@ -1,6 +1,10 @@
 package infra.auth
 
-abstract class ShiroUser implements Serializable {
+import infra.auth.domains.Role
+import infra.auth.domains.User
+
+class ShiroUser implements Serializable, User {
+
     String username
     String passwordHash
 

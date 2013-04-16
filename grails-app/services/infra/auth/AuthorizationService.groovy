@@ -1,0 +1,94 @@
+package infra.auth
+
+import infra.auth.domains.User
+import infra.auth.tokens.AuthToken
+
+import org.apache.shiro.SecurityUtils
+import org.apache.shiro.authc.AuthenticationException
+import org.apache.shiro.authc.UsernamePasswordToken
+import org.apache.shiro.subject.Subject
+import org.apache.shiro.grails.ConfigUtils
+
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.i18n.LocaleContextHolder
+
+class AuthorizationService {
+
+    @Autowired
+    AuthRepo authRepo
+
+    def messageSource
+
+    public Subject getSubject() {
+        SecurityUtils.subject
+    }
+
+    public String getPrincipal() {
+        subject?.principal
+    }
+
+    public boolean isAuthenticated() {
+        subject?.isAuthenticated() ?: false
+    }
+
+    public Map<String, ?> signIn(User user) {
+        if (isAuthenticated()) {
+            return authStatus
+        }
+        subject.login(new AuthToken(username: user.username, passwordHash: user.passwordHash))
+        authStatus
+    }
+
+    public Map<String, ?> signIn(String username, String password) {
+        signIn(username, password, false)
+    }
+
+    public Map<String, ?> signIn(String username, String password, boolean rememberMe) {
+        if (isAuthenticated()) {
+            return authStatus
+        }
+
+        if (username && password) {
+            UsernamePasswordToken authToken = new UsernamePasswordToken(username, password)
+            authToken.rememberMe = rememberMe
+
+            try {
+                subject.login(authToken)
+            } catch (AuthenticationException ex) {
+                println "Exception: ${ex}"
+            }
+        }
+        authStatus
+    }
+
+    public Map<String, ?> signUp(String username, String password) {
+        if (SecurityUtils.subject?.isAuthenticated()) {
+            return authStatus
+        }
+
+        User newUser = authRepo.createUser(username, password)
+        if (newUser) {
+            subject.login(new AuthToken(username: newUser.username, password: newUser.passwordHash))
+        } else {
+            println "User wasn`t created successfully"
+        }
+        authStatus
+    }
+
+    public Map<String, ?> signOut() {
+        def principal = getPrincipal()
+
+        subject?.logout()
+        ConfigUtils.removePrincipal(principal)
+
+        authStatus
+    }
+
+    public Map<String, ?> getAuthStatus() {
+        [isAuthenticated: isAuthenticated(), username: principal]
+    }
+
+    private String message(Map params) {
+        messageSource.getMessage(params.code, [] as Object[], null, LocaleContextHolder.locale)
+    }
+}

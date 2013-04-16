@@ -1,17 +1,24 @@
 package infra.auth
 
+import infra.auth.domains.User
+import org.springframework.beans.factory.annotation.Autowired
+
 class UserPermissionsService {
 
     static transactional = false
 
     def grailsCacheManager
 
-    Collection<String> getUserPermissions(ShiroUser user) {
-        if(!user) return []
-        def cache = grailsCacheManager?.getCache("permissions")?.get(user.id.toString())
+    @Autowired
+    AuthRepo authRepo
+
+    Collection<String> getUserPermissions(User user) {
+        if(!user)
+            return []
+        def cache = grailsCacheManager?.getCache("permissions")?.get(authRepo.getId(user).toString())
         if (cache == null) {
-            cache = (user.permissions?:[]) + (user.roles*.permissions?.flatten() ?: []).unique()
-            grailsCacheManager?.getCache("permissions")?.put(user.id.toString(), cache)
+            cache = (authRepo.getRoles(user)*.permissions?.flatten() ?: []).unique()
+            grailsCacheManager?.getCache("permissions")?.put(authRepo.getId(user).toString(), cache)
         } else cache = cache.get()
         return cache
     }
@@ -29,12 +36,12 @@ class UserPermissionsService {
         user.save()
     }
 
-    void updateUserPermissions(ShiroUser user) {
+    void updateUserPermissions(User user) {
         evictUserPermissions(user)
-        user.save()
+        authRepo.save(user)
     }
 
-    void evictUserPermissions(final ShiroUser user) {
-        grailsCacheManager?.getCache("permissions")?.evict(user.id.toString())
+    void evictUserPermissions(final User user) {
+        grailsCacheManager?.getCache("permissions")?.evict(authRepo.getId(user).toString())
     }
 }
