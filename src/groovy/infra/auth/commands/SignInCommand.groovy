@@ -1,6 +1,5 @@
 package infra.auth.commands
 
-import groovy.transform.CompileStatic
 import grails.validation.Validateable
 
 /**

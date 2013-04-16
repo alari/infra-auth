@@ -6,7 +6,8 @@ import infra.auth.commands.SignUpCommand
 class AuthController {
 
     def authorizationService
-    def viewsResolvingService
+
+    def authUtilsService
 
     def index() {
         redirect action: "login"
@@ -20,7 +21,7 @@ class AuthController {
     }
 
     def signIn(SignInCommand command) {
-        String view = viewsResolvingService.getSignInView()
+        String view = authUtilsService.config.signInView
         if (command.validate()) {
             authorizationService.signIn(command.username, command.password)
             if (!authorizationService.isAuthenticated()) {
@@ -33,7 +34,7 @@ class AuthController {
     }
 
     def signUp(SignUpCommand command) {
-        String view = viewsResolvingService.getSignUpView()
+        String view = authUtilsService.config.signUpView
         if (command.validate()) {
             authorizationService.signUp(command.username, command.password)
             if (!authorizationService.isAuthenticated()) {
@@ -52,7 +53,7 @@ class AuthController {
     }
 
     def unauthorized() {
-        String view = viewsResolvingService.getUnauthorizedView()
+        String view = authUtilsService.config.unauthorizedView
         if(view) {
             render view: view
         }

@@ -18,7 +18,7 @@ class ShiroDbRealm implements Realm {
     @Autowired
     AuthRepo authRepo
 
-    def roleUtilsService
+    def authRoleService
     def userPermissionsService
 
     def shiroPermissionResolver
@@ -52,7 +52,7 @@ class ShiroDbRealm implements Realm {
 
     @Override
     boolean hasRole(String principal, Role roleName) {
-        return null != roleUtilsService.hasRole(getUserByPrincipal(principal), roleName)
+        return null != authRoleService.hasRole(getUserByPrincipal(principal), roleName)
     }
 
     @Override

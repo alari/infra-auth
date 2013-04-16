@@ -1,7 +1,7 @@
 package infra.auth;
 
 /**
- * @author  prostohz
+ * @author prostohz
  * @since 4/11/13 11:20 AM
  */
 public interface PermissionDeniedBehavior {

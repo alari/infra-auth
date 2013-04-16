@@ -59,11 +59,12 @@ class ShiroAccessControlUtils implements AccessControlUtils {
         isPermitted permissionUtils.getPermission(prefix, action)
     }
 
-
+    @Override
     public void canAdminOrFail() {
         failIfNotPermitted permissionUtils.getAdminPermission()
     }
 
+    @Override
     public void canAdminOrFail(Class resourceClass) {
         failIfNotPermitted permissionUtils.getAdminPermission(resourceClass)
     }

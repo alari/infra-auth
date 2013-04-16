@@ -33,10 +33,10 @@ class CanAdminTransform extends AbstractTransform implements ASTTransformation {
     }
 
     protected Statement resourceAdminStatement(ClassExpression resourceClass) {
-        accessControlStatement("canAdminOrFail", new ArgumentListExpression(resourceClass))
+        accessControlStatement(CAN_ADMIN_OR_FAIL, new ArgumentListExpression(resourceClass))
     }
 
     protected Statement adminStatement() {
-        accessControlStatement("canAdminOrFail")
+        accessControlStatement(CAN_ADMIN_OR_FAIL)
     }
 }

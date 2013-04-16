@@ -1,10 +1,9 @@
 package infra.auth.commands
 
-import groovy.transform.CompileStatic
 import grails.validation.Validateable
 
 /**
- * @author  prostohz
+ * @author prostohz
  * @since 4/8/13 4:30 PM
  */
 @Validateable

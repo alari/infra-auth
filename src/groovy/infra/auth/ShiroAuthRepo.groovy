@@ -1,7 +1,6 @@
 package infra.auth
 
 import infra.auth.domains.User
-import infra.auth.settings.AuthConfigsWrapper
 import org.apache.shiro.grails.ShiroSecurityService
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -10,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired
  * @since 4/10/13 1:05 PM
  */
 class ShiroAuthRepo implements AuthRepo<ShiroUser, ShiroRole> {
-
-    private static String USER_ROLE_NAME = "user"
-
     @Autowired
     ShiroSecurityService shiroSecurityService
+
+    @Autowired
+    AuthUtilsService authUtilsService
 
     @Override
     ShiroUser createUser(String username, String password) {
@@ -26,9 +25,8 @@ class ShiroAuthRepo implements AuthRepo<ShiroUser, ShiroRole> {
                 if (user.validate()) {
                     user.save()
 
-                    Collection<String> userPermissions = AuthConfigsWrapper.getInstance().getConfigs().userPermissions
-                    ShiroRole userRole = createRole(USER_ROLE_NAME, userPermissions)
-                    addToRoles(user, userRole)
+                    ShiroRole userRole = (ShiroRole)authUtilsService.defaultRole
+                    if(userRole) addToRoles(user, userRole)
                 } else
                     user = null
             }
@@ -42,11 +40,8 @@ class ShiroAuthRepo implements AuthRepo<ShiroUser, ShiroRole> {
     }
 
     @Override
-    void save(ShiroUser user, Map params = null) {
-        if (params)
-            user.save(params)
-        else
-            user.save()
+    void save(ShiroUser user) {
+        user.save()
     }
 
     @Override
@@ -110,10 +105,7 @@ class ShiroAuthRepo implements AuthRepo<ShiroUser, ShiroRole> {
 
     @Override
     Collection<String> getRolePermissions(ShiroRole role) {
-        if (role) {
-            return role.permissions
-        }
-        null
+        role?.permissions
     }
 
     @Override

@@ -5,7 +5,7 @@ import infra.auth.domains.User
 import infra.auth.utils.PermissionUtils
 import org.springframework.beans.factory.annotation.Autowired
 
-class RoleUtilsService {
+class AuthRoleService {
 
     def userPermissionsService
 
@@ -35,23 +35,22 @@ class RoleUtilsService {
         authRepo.getRole(name)
     }
 
-    Role createRole(Class resourceClass, def id, List<String> permissions = null) {
+    Role createRole(Class resourceClass, def id, Collection<String> permissions = null) {
         createRole(getRoleName(resourceClass, id), permissions ? permissions : permissionUtils.getResourcePermissions(resourceClass, id))
     }
 
-    Role createRole(String prefix, def id, List<String> permissions) {
+    Role createRole(String prefix, def id, Collection<String> permissions) {
         createRole(getRoleName(prefix, id), permissions)
     }
 
-    Role createRole(String name, List<String> permissions) {
+    Role createRole(String name, Collection<String> permissions) {
        authRepo.createRole(name, permissions)
     }
 
 
     boolean hasRole(User user, Role role) {
         Collection<Role> roles = authRepo.getRoles(user)
-        if (roles && roles.size())
-            roles.contains(role)
+        roles?.contains(role)
     }
 
     void addRole(User user, Role role) {
