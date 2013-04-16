@@ -10,10 +10,13 @@ class AuthConfigs {
     private final String signUpView
     private final String unauthorizedView
 
-    public AuthConfigs(String signInView, String signUpView, String unauthorizedView) {
+    private final Collection<String> userPermissions
+
+    public AuthConfigs(String signInView, String signUpView, String unauthorizedView, Collection<String> userPermissions) {
         this.signInView = signInView
         this.signUpView = signUpView
         this.unauthorizedView = unauthorizedView
+        this.userPermissions = userPermissions
     }
 
     public String getSignInView() {
@@ -26,5 +29,9 @@ class AuthConfigs {
 
     public String getUnauthorizedView() {
         unauthorizedView
+    }
+
+    public Collection<String> getUserPermissions() {
+        userPermissions
     }
 }

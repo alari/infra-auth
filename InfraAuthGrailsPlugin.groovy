@@ -51,33 +51,49 @@ class InfraAuthGrailsPlugin {
         }
 
 
+        String signInView = null
+        String signUpView = null
+        String unauthorizedView = null
+        Collection<String> userPermissions = null
+
         def infraConfig = application.config.infra
-        if(infraConfig) {
+
+        if(nodeIsNotEmpty(infraConfig)) {
+            def rolesConfigNode = infraConfig.roles
+            if (nodeIsNotEmpty(rolesConfigNode)) {
+                def permissions = rolesConfigNode.user?.permissions
+
+                if (nodeIsNotEmpty(permissions))
+                    userPermissions = (Collection<String>) permissions
+            }
+
             def authConfigNode = infraConfig.auth
+            if (nodeIsNotEmpty(authConfigNode)) {
+                def signInConfigs = authConfigNode?.signIn
+                if (nodeIsNotEmpty(signInConfigs)) {
+                    if (nodeIsNotEmpty(signInConfigs.view))
+                        signInView = signInConfigs.view
+                }
 
-            def signInConfigs = authConfigNode?.signIn
-            String signInView = null
-            if (signInConfigs != [:]) {
-                if (signInConfigs.view != [:])
-                    signInView = signInConfigs.view
+                def signUpConfigs = authConfigNode?.signUp
+                if(nodeIsNotEmpty(signUpConfigs)) {
+                    if (nodeIsNotEmpty(signUpConfigs.view))
+                        signUpView = signUpConfigs.view
+                }
+
+                def unauthorizedConfigs = authConfigNode?.unauthorized
+                if (nodeIsNotEmpty(unauthorizedConfigs))
+                    if (nodeIsNotEmpty(unauthorizedConfigs.view))
+                        unauthorizedView = unauthorizedConfigs.view
             }
-
-            def signUpConfigs = authConfigNode?.signUp
-            String signUpView = null
-            if(signUpConfigs != [:]) {
-                if (signUpConfigs.view != [:])
-                    signUpView = signUpConfigs.view
-            }
-
-            def unauthorizedConfigs = authConfigNode?.unauthorized
-            String unauthorizedView = null
-            if (unauthorizedConfigs != [:])
-                if (unauthorizedConfigs.view != [:])
-                    unauthorizedView = unauthorizedConfigs.view
-
-            AuthConfigsWrapper authConfigsWrapper = AuthConfigsWrapper.getInstance()
-            AuthConfigs authConfigs = new AuthConfigs(signInView, signUpView, unauthorizedView)
-            authConfigsWrapper.setConfigs(authConfigs)
         }
+
+        AuthConfigsWrapper authConfigsWrapper = AuthConfigsWrapper.getInstance()
+        AuthConfigs authConfigs = new AuthConfigs(signInView, signUpView, unauthorizedView, userPermissions)
+        authConfigsWrapper.setConfigs(authConfigs)
+    }
+
+    private static boolean nodeIsNotEmpty(def node) {
+        node != [:]
     }
 }

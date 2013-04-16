@@ -1,6 +1,7 @@
 package infra.auth
 
 import infra.auth.domains.User
+import infra.auth.settings.AuthConfigsWrapper
 import org.apache.shiro.grails.ShiroSecurityService
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired
  * @since 4/10/13 1:05 PM
  */
 class ShiroAuthRepo implements AuthRepo<ShiroUser, ShiroRole> {
+
+    private static String USER_ROLE_NAME = "user"
 
     @Autowired
     ShiroSecurityService shiroSecurityService
@@ -20,7 +23,14 @@ class ShiroAuthRepo implements AuthRepo<ShiroUser, ShiroRole> {
             if (!getUserByUsername(username)) {
                 String passwordHash = shiroSecurityService.encodePassword(password, username)
                 user = new ShiroUser(username: username, passwordHash: passwordHash)
-                user.save()
+                if (user.validate()) {
+                    user.save()
+
+                    Collection<String> userPermissions = AuthConfigsWrapper.getInstance().getConfigs().userPermissions
+                    ShiroRole userRole = createRole(USER_ROLE_NAME, userPermissions)
+                    addToRoles(user, userRole)
+                } else
+                    user = null
             }
         }
         user
@@ -32,8 +42,26 @@ class ShiroAuthRepo implements AuthRepo<ShiroUser, ShiroRole> {
     }
 
     @Override
+    void save(ShiroUser user, Map params = null) {
+        if (params)
+            user.save(params)
+        else
+            user.save()
+    }
+
+    @Override
     String getRoleName(ShiroRole role) {
         role?.name ? role.name : null
+    }
+
+    @Override
+    Serializable getId(ShiroUser user) {
+        user ? user.id : null
+    }
+
+    @Override
+    String getUsername(ShiroUser user) {
+        user ? user.username : null
     }
 
     @Override
@@ -42,21 +70,15 @@ class ShiroAuthRepo implements AuthRepo<ShiroUser, ShiroRole> {
     }
 
     @Override
-    ShiroRole findOrCreateRole(String name) {
-        ShiroRole role = null
-        if (name) {
-            role = new ShiroRole()
-            role.name = name
-            role.save()
-        }
-        role
+    ShiroRole getRole(String name) {
+        ShiroRole.findOrSaveByName(name)
     }
 
     @Override
     ShiroRole createRole(String name, Collection<String> permissions) {
         ShiroRole role = null
         if (name && permissions) {
-            role = new ShiroRole()
+            role = getRole(name)
             if (permissions.size() > 0) {
                 for (String permission : permissions) {
                     role.addToPermissions(permission)
@@ -84,6 +106,14 @@ class ShiroAuthRepo implements AuthRepo<ShiroUser, ShiroRole> {
             true
         }
         false
+    }
+
+    @Override
+    Collection<String> getRolePermissions(ShiroRole role) {
+        if (role) {
+            return role.permissions
+        }
+        null
     }
 
     @Override

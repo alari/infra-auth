@@ -32,7 +32,7 @@ class RoleUtilsService {
     }
 
     Role getRole(String name) {
-        authRepo.findOrCreateRole(name)
+        authRepo.getRole(name)
     }
 
     Role createRole(Class resourceClass, def id, List<String> permissions = null) {

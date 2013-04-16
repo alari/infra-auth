@@ -28,8 +28,7 @@ class AuthController {
             }
         }
         if(view) {
-            println "signIn-view: ${view}"
-            render view: "/${view}"
+            render view: view
         }
     }
 
@@ -42,8 +41,7 @@ class AuthController {
             }
         }
         if(view) {
-            println "signUp-view: ${view}"
-            render view: "/${view}"
+            render view: view
         }
     }
 
@@ -55,7 +53,8 @@ class AuthController {
 
     def unauthorized() {
         String view = viewsResolvingService.getUnauthorizedView()
-        if(view)
-            render view: "/${view}"
+        if(view) {
+            render view: view
+        }
     }
 }
