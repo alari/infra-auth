@@ -18,25 +18,15 @@ class AuthorizationService {
     AuthRepo authRepo
 
     def messageSource
+    def authUtilsService
 
-    public Subject getSubject() {
-        SecurityUtils.subject
-    }
-
-    public String getPrincipal() {
-        subject?.principal
-    }
-
-    public boolean isAuthenticated() {
-        subject?.isAuthenticated() ?: false
-    }
 
     public Map<String, ?> signIn(User user) {
-        if (isAuthenticated()) {
-            return authStatus
+        if (authUtilsService.isAuthenticated()) {
+            return authUtilsService.authStatus
         }
-        subject.login(new AuthToken(username: user.username, passwordHash: user.passwordHash))
-        authStatus
+        authUtilsService.subject.login(new AuthToken(username: authRepo.getUsername(user), passwordHash: authRepo.getPasswordHash(user)))
+        authUtilsService.authStatus
     }
 
     public Map<String, ?> signIn(String username, String password) {
@@ -44,8 +34,8 @@ class AuthorizationService {
     }
 
     public Map<String, ?> signIn(String username, String password, boolean rememberMe) {
-        if (isAuthenticated()) {
-            return authStatus
+        if (authUtilsService.isAuthenticated()) {
+            return authUtilsService.authStatus
         }
 
         if (username && password) {
@@ -53,39 +43,35 @@ class AuthorizationService {
             authToken.rememberMe = rememberMe
 
             try {
-                subject.login(authToken)
+                authUtilsService.subject.login(authToken)
             } catch (AuthenticationException ex) {
                 println "Exception: ${ex}"
             }
         }
-        authStatus
+        authUtilsService.authStatus
     }
 
     public Map<String, ?> signUp(String username, String password) {
         if (SecurityUtils.subject?.isAuthenticated()) {
-            return authStatus
+            return authUtilsService.authStatus
         }
 
         User newUser = authRepo.createUser(username, password)
         if (newUser) {
-            subject.login(new AuthToken(username: newUser.username, password: newUser.passwordHash))
+            authUtilsService.subject.login(new AuthToken(username: authRepo.getUsername(newUser), password: password))
         } else {
             println "User wasn`t created successfully"
         }
-        authStatus
+        authUtilsService.authStatus
     }
 
     public Map<String, ?> signOut() {
-        def principal = getPrincipal()
+        def principal = authUtilsService.getPrincipal()
 
-        subject?.logout()
+        authUtilsService.subject?.logout()
         ConfigUtils.removePrincipal(principal)
 
-        authStatus
-    }
-
-    public Map<String, ?> getAuthStatus() {
-        [isAuthenticated: isAuthenticated(), username: principal]
+        authUtilsService.authStatus
     }
 
     private String message(Map params) {

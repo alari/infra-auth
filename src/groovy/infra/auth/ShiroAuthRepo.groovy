@@ -46,22 +46,27 @@ class ShiroAuthRepo implements AuthRepo<ShiroUser, ShiroRole> {
 
     @Override
     String getRoleName(ShiroRole role) {
-        role?.name ? role.name : null
+        role?.name
+    }
+
+    @Override
+    String getPasswordHash(ShiroUser user) {
+        user?.passwordHash
     }
 
     @Override
     Serializable getId(ShiroUser user) {
-        user ? user.id : null
+        user?.id
     }
 
     @Override
     String getUsername(ShiroUser user) {
-        user ? user.username : null
+        user?.username
     }
 
     @Override
     Collection<ShiroRole> getRoles(ShiroUser user) {
-        user ? user.roles : null
+        user?.roles
     }
 
     @Override

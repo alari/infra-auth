@@ -13,6 +13,8 @@ import java.util.Map;
  */
 public interface AuthRepo<T extends User, S extends Role> {
 
+    public String getPasswordHash(T user);
+
     public Serializable getId(T user);
 
     public String getUsername(T user);

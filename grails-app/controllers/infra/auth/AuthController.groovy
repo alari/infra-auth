@@ -14,7 +14,7 @@ class AuthController {
     }
 
     def login() {
-        if (authorizationService.isAuthenticated())
+        if (authUtilsService.isAuthenticated())
             redirect uri: "/"
         else
             redirect action: "signIn"
@@ -24,7 +24,7 @@ class AuthController {
         String view = authUtilsService.config.signInView
         if (command.validate()) {
             authorizationService.signIn(command.username, command.password)
-            if (!authorizationService.isAuthenticated()) {
+            if (!authUtilsService.isAuthenticated()) {
                 flash.message = g.message(code: "infra.auth.signIn.status.failed")
             }
         }
@@ -37,7 +37,7 @@ class AuthController {
         String view = authUtilsService.config.signUpView
         if (command.validate()) {
             authorizationService.signUp(command.username, command.password)
-            if (!authorizationService.isAuthenticated()) {
+            if (!authUtilsService.isAuthenticated()) {
                 flash.message = g.message(code: "infra.auth.signUp.status.failed")
             }
         }
