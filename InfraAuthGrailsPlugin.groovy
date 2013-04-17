@@ -1,6 +1,7 @@
 import infra.auth.ShiroAuthRepo
 import infra.auth.ShiroPermissionDeniedBehavior
 import infra.auth.utils.AccessControlBeanHolder
+import infra.auth.utils.ShiroAccessControlUtils
 import infra.auth.utils.ShiroPermissionUtils
 
 import org.apache.shiro.authc.credential.Sha1CredentialsMatcher
@@ -45,6 +46,7 @@ class InfraAuthGrailsPlugin {
             bean.factoryMethod = "getInstance"
             bean.singleton = true
         }
+        accessControlUtils(ShiroAccessControlUtils)
 
         authRepo(ShiroAuthRepo)
         permissionUtils(ShiroPermissionUtils)

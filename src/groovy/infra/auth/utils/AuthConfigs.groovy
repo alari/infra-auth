@@ -17,7 +17,7 @@ class AuthConfigs {
 
     public AuthConfigs(ConfigObject authPluginConfig) {
 
-        config = authPluginConfig.flatten()
+        config = authPluginConfig?.flatten() ?: [:]
 
         signInView = config.signInView
         signUpView = config.signUpView

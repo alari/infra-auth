@@ -11,22 +11,22 @@ final class AccessControlBeanHolder {
     @Autowired AccessControlUtils accessControlUtils
 
     static public void canAdminOrFail() {
-        instance.accessControlUtils.canAdminOrFail()
+        getInstance().accessControlUtils.canAdminOrFail()
     }
 
     static public void canAdminOrFail(Class resourceClass) {
-        instance.accessControlUtils.canAdminOrFail(resourceClass)
+        getInstance().accessControlUtils.canAdminOrFail(resourceClass)
     }
 
     static public void canOrFail(Class resourceClass, def id, String permission) {
-        instance.accessControlUtils.canOrFail(resourceClass, id, permission)
+        getInstance().accessControlUtils.canOrFail(resourceClass, id, permission)
     }
 
     static public void canOrFail(String prefix, String permission) {
-        instance.accessControlUtils.canOrFail(prefix, permission)
+        getInstance().accessControlUtils.canOrFail(prefix, permission)
     }
 
     static public void canCreateOrFail(Class resourceClass) {
-        instance.accessControlUtils.canCreateOrFail(resourceClass)
+        getInstance().accessControlUtils.canCreateOrFail(resourceClass)
     }
 }

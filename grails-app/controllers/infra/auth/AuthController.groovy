@@ -1,6 +1,6 @@
 package infra.auth
 
-import infra.auth.commands.SignInCommand
+import grails.converters.JSON
 import infra.auth.commands.SignUpCommand
 
 class AuthController {
@@ -20,16 +20,32 @@ class AuthController {
             redirect action: "signIn"
     }
 
-    def signIn(SignInCommand command) {
-        String view = authUtilsService.config.signInView
-        if (command.validate()) {
-            authorizationService.signIn(command.username, command.password)
+    def signIn(String username, String password, boolean rememberMe) {
+
+        if(request.JSON) {
+            username = request.JSON.username
+            password = request.JSON.password
+            rememberMe = request.JSON.rememberMe
+        }
+
+        if (!authUtilsService.isAuthenticated() && username && password) {
+            authorizationService.signIn(username, password, rememberMe)
             if (!authUtilsService.isAuthenticated()) {
                 flash.message = g.message(code: "infra.auth.signIn.status.failed")
             }
         }
-        if(view) {
-            render view: view
+
+        withFormat {
+            html {
+                String view = authUtilsService.config.signInView
+                if(view) {
+                    render view: view, model: [username: username, rememberMe: rememberMe]
+                }
+                [username: username, rememberMe: rememberMe]
+            }
+            json {
+                render authUtilsService.authStatus as JSON
+            }
         }
     }
 
@@ -49,7 +65,19 @@ class AuthController {
     def signOut() {
         authorizationService.signOut()
 
-        redirect url: "/"
+        withFormat {
+            html {
+                redirect url: "/"
+            }
+            json {
+                render authUtilsService.authStatus as JSON
+            }
+        }
+
+    }
+
+    def checkAuth() {
+        render authUtilsService.authStatus as JSON
     }
 
     def unauthorized() {

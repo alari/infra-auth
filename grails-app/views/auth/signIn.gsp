@@ -7,7 +7,7 @@
 <html>
 <head>
     <title><g:message code="infra.auth.signIn.title" /></title>
-    <link type="text/css" rel="stylesheet" href="${createLinkTo(dir:'css',file:'auth.css')}" />
+    <link type="text/css" rel="stylesheet" href="${createLinkTo(dir:'css',file:'auth.css',plugin:'infraAuth')}" />
 </head>
 <body>
 
