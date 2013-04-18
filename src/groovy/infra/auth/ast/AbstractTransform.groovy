@@ -11,6 +11,7 @@ import org.codehaus.groovy.ast.expr.*
 import org.codehaus.groovy.ast.stmt.BlockStatement
 import org.codehaus.groovy.ast.stmt.ExpressionStatement
 import org.codehaus.groovy.ast.stmt.Statement
+import org.codehaus.groovy.classgen.BytecodeSequence
 import org.codehaus.groovy.control.CompilePhase
 import org.codehaus.groovy.transform.ASTTransformation
 import org.codehaus.groovy.transform.GroovyASTTransformation
@@ -66,6 +67,10 @@ abstract class AbstractTransform implements ASTTransformation {
     }
 
     protected void prependMethodStatement(MethodNode methodNode, Statement statement) {
+        if(methodNode.code instanceof BytecodeSequence) {
+            System.err.println "Trying to prepend statement to compiled method: ${methodNode.declaringClass.name}:${methodNode.name}"
+            return;
+        }
         BlockStatement codeBlock = (BlockStatement) methodNode.code
         BlockStatement block = new BlockStatement();
 
@@ -78,9 +83,7 @@ abstract class AbstractTransform implements ASTTransformation {
         new ExpressionStatement(new MethodCallExpression(
                 new ClassExpression(new ClassNode(AccessControlBeanHolder)),
                 new ConstantExpression(method),
-                args ?: new ArgumentListExpression(
-
-                ))
+                args ?: new ArgumentListExpression())
         )
     }
 
