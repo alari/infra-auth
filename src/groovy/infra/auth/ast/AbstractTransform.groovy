@@ -18,7 +18,7 @@ import org.codehaus.groovy.transform.GroovyASTTransformation
  * @author alari
  * @since 3/20/13 1:59 PM
  */
-@GroovyASTTransformation(phase = CompilePhase.SEMANTIC_ANALYSIS)
+@GroovyASTTransformation(phase = CompilePhase.CANONICALIZATION)
 abstract class AbstractTransform implements ASTTransformation {
     protected static final String HASH_CODE = '#'
     protected static final String GSTRING = '$'
@@ -66,6 +66,9 @@ abstract class AbstractTransform implements ASTTransformation {
     }
 
     protected void prependMethodStatement(MethodNode methodNode, Statement statement) {
+        if(!methodNode.code instanceof BlockStatement) {
+            System.err.println "Trying to prepend statement to compiled method: ${methodNode.declaringClass.name}:${methodNode.name}"
+        }
         BlockStatement codeBlock = (BlockStatement) methodNode.code
         BlockStatement block = new BlockStatement();
 
