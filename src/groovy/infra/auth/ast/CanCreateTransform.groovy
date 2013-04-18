@@ -30,7 +30,7 @@ class CanCreateTransform extends AbstractTransform implements ASTTransformation 
     }
 
     protected Statement resourcePermittedStatement(ClassExpression resourceClass) {
-        accessControlStatement("canCreateOrFail",
+        accessControlStatement(CAN_CREATE_OR_FAIL,
                 new ArgumentListExpression(
                         resourceClass,
                 )
