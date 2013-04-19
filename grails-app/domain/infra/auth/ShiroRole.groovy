@@ -1,6 +1,9 @@
 package infra.auth
 
-class ShiroRole implements Serializable {
+import infra.auth.domains.Role
+
+class ShiroRole implements Serializable, Role {
+
     String name
 
     static hasMany = [users: ShiroUser, permissions: String]

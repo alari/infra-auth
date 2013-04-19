@@ -22,7 +22,7 @@ class CanActTransform extends AbstractTransform implements ASTTransformation {
         String permission = annotation.getMember("value").text
         String prefix = annotation.getMember("prefix")?.text ?: ""
 
-        Statement statement = accessControlStatement("canOrFail", new ArgumentListExpression(
+        Statement statement = accessControlStatement(CAN_OR_FAIL, new ArgumentListExpression(
                 keyExpression(prefix),
                 keyExpression(permission)
         ))
