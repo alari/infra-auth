@@ -86,6 +86,22 @@ class ShiroDbRealm implements Realm {
         }
         return retval != null
     }
+    
+    boolean isPermitted(String principal, Permission requiredPermission) {
+        Collection<String> permissions = null
+
+        ShiroUser.withNewSession {
+            permissions = userPermissionsService.getUserPermissions(getUserByPrincipal(principal))
+        }
+
+        def retval = permissions?.find { userPermission ->
+
+            def perm = shiroPermissionResolver.resolvePermission(userPermission)
+
+            return perm.implies(requiredPermission)
+        }
+        return retval != null
+    }
 
     User getUserByPrincipal(String principal) {
         authRepo.getUserByUsername(principal)
