@@ -10,6 +10,7 @@ import org.apache.shiro.authc.IncorrectCredentialsException
 import org.apache.shiro.authc.SimpleAccount
 import org.apache.shiro.authc.UnknownAccountException
 import org.apache.shiro.authc.UsernamePasswordToken
+import org.apache.shiro.authz.Permission
 import org.springframework.beans.factory.annotation.Autowired
 
 class ShiroDbRealm implements Realm {
